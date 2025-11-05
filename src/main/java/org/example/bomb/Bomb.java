@@ -9,14 +9,16 @@ public abstract class Bomb extends GameObject {
     protected int damage;  // 폭발 시 피해량
     protected char symbol; // 콘솔 표시 문자
     protected boolean exploded; // 폭발 여부
+    protected String shaping; // 폭발 여부
 
-    public Bomb(int x, int y, char symbol, int speed, int damage) {
+    public Bomb(int x, int y, char symbol, int speed, int damage, String shaping) {
         this.x = x;
         this.y = y;
         this.symbol = symbol;
         this.speed = speed;
         this.damage = damage;
         this.exploded = false;
+        this.shaping = shaping;
     }
 
     /** 폭탄이 떨어지는 기본 로직 */
