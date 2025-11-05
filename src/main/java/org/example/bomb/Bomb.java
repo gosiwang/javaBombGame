@@ -25,8 +25,8 @@ public abstract class Bomb extends GameObject {
             y += speed;
 
             // 화면 아래 도달하면 폭발
-            if (y >= mapSiezY - 1) {
-                y = mapSiezY - 1;
+            if (y >= mapSizeY - 1) {
+                y = mapSizeY - 1;
                 explode();
             }
         }

@@ -19,14 +19,14 @@ public abstract class Player extends GameObject {
         playerY += dy * speed;
     }
 
-    public Player(){
-    }
+    // ===== Getter/Setter 추가 =====
+    public int getPlayerX() { return playerX; }
+    public int getPlayerY() { return playerY; }
+    public int getSpeed() { return speed; }
+    public int getHp() { return hp; }
+    public char getShape() { return shape; }
 
-
-    public Player(int playerX, int playerY, int speed, int hp) {
-        this.playerX = playerX;
-        this.playerY = playerY;
-        this.speed = speed;
-        this.hp = hp;
-    }
+    public void setPlayerX(int x) { this.playerX = x; }
+    public void setPlayerY(int y) { this.playerY = y; }
+    public void setHp(int hp) { this.hp = hp; }
 }

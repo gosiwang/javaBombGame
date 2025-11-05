@@ -1,9 +1,9 @@
 package org.example;
 
 public abstract class GameObject {
-    public static final int mapSiezX = 10;
+    public static final int mapSizeX = 10;
 
-    public static final int mapSiezY = 30;
+    public static final int mapSizeY = 30;
 
 
 
