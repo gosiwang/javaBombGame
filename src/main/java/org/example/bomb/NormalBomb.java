@@ -2,7 +2,7 @@ package org.example.bomb;
 
 public class NormalBomb extends Bomb {
     public NormalBomb(int x, int y) {
-        super(x, y, 'B', 1, 10);
+        super(x, y, 'B', 1, 10,"💣");
     }
 
     @Override
