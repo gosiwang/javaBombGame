@@ -59,6 +59,7 @@ public class MainGame {
             for(int j=0; j < map[i].length; j++){
                 if(i == playerX && j == playerY) System.out.print("▼");
                 else System.out.print("□");
+
             }
             System.out.println();
 
