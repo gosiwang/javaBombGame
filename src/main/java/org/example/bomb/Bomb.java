@@ -1,4 +1,4 @@
 package org.example.bomb;
 
-public class Bomb {
+public abstract Bomb {
 }
