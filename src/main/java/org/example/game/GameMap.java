@@ -1,4 +1,4 @@
-package common.game;
+package org.example.game;
 
 public class GameMap {
 }
