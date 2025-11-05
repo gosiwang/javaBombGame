@@ -9,7 +9,7 @@ public abstract class Bomb extends GameObject {
     protected int damage;  // 폭발 시 피해량
     protected char symbol; // 콘솔 표시 문자
     protected boolean exploded; // 폭발 여부
-    protected String shaping; // 폭발 여부
+    public String shaping; // 이모지 모양 (public으로 변경)
 
     public Bomb(int x, int y, char symbol, int speed, int damage, String shaping) {
         this.x = x;
@@ -51,11 +51,10 @@ public abstract class Bomb extends GameObject {
     /** 폭발 시 처리 (각 폭탄마다 다름) */
     public abstract void explode();
 
+    // Getter 메서드들
     public int getX() { return x; }
     public int getY() { return y; }
     public int getDamage() { return damage; }
     public boolean isExploded() { return exploded; }
-
-
-
+    public String getShaping() { return shaping; }  // 추가!
 }

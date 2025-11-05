@@ -17,8 +17,8 @@ public class GameManager {
     }
 
     // 게임 설정
-    private final int mapSizeX = 30;
-    private final int mapSizeY = 10;
+    private final int mapSizeX = GameObject.mapSizeX;
+    private final int mapSizeY = GameObject.mapSizeY;
     private Player player;
     private List<Bomb> bombs = new ArrayList<>();
     private Random random = new Random();
@@ -26,12 +26,14 @@ public class GameManager {
     // 타이밍 관련
     private long lastTime = System.nanoTime();
     private long lastBombSpawn = System.nanoTime();
-    private double bombSpawnInterval = 2.0; // 2초마다 폭탄 생성
+    private double bombSpawnInterval = 1.5; // 1.5초마다 폭탄 생성
 
     volatile boolean running = true;
 
     // ===== 게임 시작 =====
     public void start() {
+        // GameObject의 mapSize 설정
+
         // 플레이어 선택
         selectPlayer();
 
@@ -52,9 +54,9 @@ public class GameManager {
         System.out.println("└──────────────────────────────┘");
         System.out.println();
         System.out.println("직업을 선택하세요:");
-        System.out.println("1. 탱커 (＠) - HP:5, Speed:1");
-        System.out.println("2. 댄서 (＆) - HP:2, Speed:2");
-        System.out.println("3. 러너 (♣) - HP:1, Speed:3");
+        System.out.println("1. 탱커 (＠) - HP:60, Speed:1");
+        System.out.println("2. 댄서 (＆) - HP:25, Speed:2");
+        System.out.println("3. 러너 (♣) - HP:30, Speed:3");
         System.out.print("선택 (1-3): ");
 
         String choice = sc.nextLine();
@@ -85,7 +87,7 @@ public class GameManager {
                 render();
             }
 
-            // 2초마다 폭탄 생성
+            // 1.5초마다 폭탄 생성
             if (bombDeltaTime >= bombSpawnInterval) {
                 lastBombSpawn = currentTime;
                 spawnBomb();
@@ -95,14 +97,15 @@ public class GameManager {
         gameOver();
     }
 
-    // ===== 폭탄 생성 =====
+    // ===== 폭탄 랜덤 생성 =====
     private void spawnBomb() {
-        int x = random.nextInt(mapSizeX);
-        int bombType = random.nextInt(3);
+        int x = random.nextInt(mapSizeX);  // 랜덤 위치
+        int bombType = random.nextInt(3);   // 0, 1, 2 중 랜덤
 
         Bomb newBomb = switch (bombType) {
-            case 1 -> new FireBomb(x, 0);
-            case 2 -> new PoisonBomb(x, 0);
+            case 0 -> new NormalBomb(x, 0);   // 💣 일반 폭탄
+            case 1 -> new FireBomb(x, 0);     // 🔥 화염 폭탄
+            case 2 -> new PoisonBomb(x, 0);   // ☠️ 독 폭탄
             default -> new NormalBomb(x, 0);
         };
 
@@ -114,19 +117,20 @@ public class GameManager {
         // 폭탄 업데이트
         for (int i = bombs.size() - 1; i >= 0; i--) {
             Bomb bomb = bombs.get(i);
-            bomb.fall();
+            bomb.update();
 
             // 충돌 체크
             if (bomb.getX() == player.getPlayerX() && bomb.getY() == player.getPlayerY()) {
                 player.setHp(player.getHp() - bomb.getDamage());
-                System.out.println("💥 맞았다! HP 감소!");
                 bomb.explode();
                 bombs.remove(i);
+                if(player.getHp() < 0) player.setHp(0);
                 continue;
             }
 
-            // 화면 밖으로 나간 폭탄 제거
-            if (bomb.getY() >= mapSizeY) {
+
+            // 폭발했거나 화면 밖으로 나간 폭탄 제거
+            if (bomb.isExploded() || bomb.getY() >= mapSizeY) {
                 bombs.remove(i);
             }
         }
@@ -134,12 +138,15 @@ public class GameManager {
 
     // ===== 렌더링 =====
     public void render() {
-        // 화면 클리어 (여러 줄 띄우기)
+        // 화면 클리어
         for (int i = 0; i < 50; i++) System.out.println();
 
-        System.out.println("┌──────────────────────────────┐");
-        System.out.println("│ HP: " + player.getHp() + " | Speed: " + player.getSpeed() + " | Bombs: " + bombs.size() + "    │");
-        System.out.println("└──────────────────────────────┘");
+/*        System.out.println("┌────────────────────────────────────────────────────────────┐");
+        System.out.println("│ HP: " + player.getHp() + " | Speed: " + player.getSpeed() + " | Bombs: " + bombs.size() + "                                │");
+        System.out.println("└────────────────────────────────────────────────────────────┘");*/
+
+        System.out.println("\n조작: A(왼쪽) D(오른쪽) Q(종료)");
+        System.out.println("폭탄 종류: 💣(일반) 🔥(화염) ☠️(독)");
 
         // 맵 그리기
         for (int y = 0; y < mapSizeY; y++) {
@@ -152,11 +159,11 @@ public class GameManager {
                     drawn = true;
                 }
 
-                // 폭탄 그리기
+                // 폭탄 그리기 (shaping 이모지 사용)
                 if (!drawn) {
                     for (Bomb bomb : bombs) {
                         if (bomb.getX() == x && bomb.getY() == y) {
-                            System.out.print(bomb.getSymbol());
+                            System.out.print(bomb.shaping);  // 💣, 🔥, ☠️ 이모지 출력
                             drawn = true;
                             break;
                         }
@@ -171,7 +178,6 @@ public class GameManager {
             System.out.println();
         }
 
-        System.out.println("\n조작: A(왼쪽) D(오른쪽) Q(종료)");
     }
 
     // ===== 입력 처리 =====
@@ -182,10 +188,10 @@ public class GameManager {
                     .jna(true)
                     .build();
 
-            terminal.enterRawMode();  // Raw 모드 활성화
+            terminal.enterRawMode();
 
             while (running && player.getHp() > 0) {
-                int ch = terminal.reader().read(10);  // 타임아웃 짧게
+                int ch = terminal.reader().read(10);
                 if (ch == -1) continue;
 
                 char key = Character.toLowerCase((char) ch);

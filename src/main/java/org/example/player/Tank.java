@@ -6,7 +6,7 @@ public class Tank extends Player{
 
     public Tank(int playerX, int playerY) {
         super(playerX, playerY);
-        this.hp = 5;
+        this.hp = 60;
         this.speed = 1;
         this.shape = '＠';
     }
