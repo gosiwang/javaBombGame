@@ -46,6 +46,7 @@ public class GameMap {
 
         for (int y = 0; y < mapSizeY; y++) {
             for (int x = 0; x < mapSizeX; x++) {
+
                 System.out.print("□"); // 빈 공간 출력
             }
             System.out.println();
